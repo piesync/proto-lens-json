@@ -22,8 +22,10 @@ encodeMessageJSON = AE.encodingToLazyByteString . messageToEncoding
 
 messageToEncoding :: P.Message msg => msg -> Aeson.Encoding
 messageToEncoding msg =
-  AE.pairs $ Map.foldMapWithKey fld (P.fieldsByTextFormatName P.descriptor)
-  where fld k v = maybe mempty (AE.pairStr $ camelize k) (fieldToEncoding msg v)
+  AE.pairs $ foldMap fld (P.fieldsByTag P.descriptor)
+  where fld v = maybe mempty
+                  (AE.pairStr $ camelize $ P.fieldDescriptorName v)
+                  (fieldToEncoding msg v)
 
 fieldToEncoding :: msg -> P.FieldDescriptor msg -> Maybe Aeson.Encoding
 fieldToEncoding msg (P.FieldDescriptor _ typeDescr accessor) =
