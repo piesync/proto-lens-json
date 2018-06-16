@@ -22,7 +22,7 @@ encodeMessageJSON = AE.encodingToLazyByteString . messageToEncoding
 
 messageToEncoding :: P.Message msg => msg -> Aeson.Encoding
 messageToEncoding msg =
-  AE.pairs $ foldMap fld (P.fieldsByTag P.descriptor)
+  AE.pairs $ foldMap fld P.fieldsByTag
   where fld v = maybe mempty
                   (AE.pairStr $ camelize $ P.fieldDescriptorName v)
                   (fieldToEncoding msg v)
@@ -48,25 +48,24 @@ keyFieldToEncoding msg d@(P.FieldDescriptor _ typeDescr accessor) =
     _ -> error "[BUG] unsupported field for map entry"
 
 fieldValueToEncoding :: P.FieldTypeDescriptor value -> value -> Aeson.Encoding
-fieldValueToEncoding P.MessageField = messageToEncoding
-fieldValueToEncoding P.GroupField = undefined
-fieldValueToEncoding P.EnumField = AE.string . P.showEnum
-fieldValueToEncoding P.Int32Field = AE.int32
-fieldValueToEncoding P.Int64Field = AE.int64Text
-fieldValueToEncoding P.UInt32Field = AE.word32
-fieldValueToEncoding P.UInt64Field = AE.word64Text
-fieldValueToEncoding P.SInt32Field = AE.int32
-fieldValueToEncoding P.SInt64Field = AE.int64Text
-fieldValueToEncoding P.Fixed32Field = AE.word32
-fieldValueToEncoding P.Fixed64Field = AE.word64Text
-fieldValueToEncoding P.SFixed32Field = AE.int32
-fieldValueToEncoding P.SFixed64Field = AE.int64Text
-fieldValueToEncoding P.FloatField = realFloatToEncoding AE.float
-fieldValueToEncoding P.DoubleField = realFloatToEncoding AE.double
-fieldValueToEncoding P.BoolField = AE.bool
-fieldValueToEncoding P.StringField = AE.text
-fieldValueToEncoding P.BytesField = AE.unsafeToEncoding . quote . B.byteString . B64.encode
-                                      where quote b = B.char8 '"' <> b <> B.char8 '"'
+fieldValueToEncoding (P.MessageField _) = messageToEncoding
+fieldValueToEncoding (P.ScalarField P.EnumField) = AE.string . P.showEnum
+fieldValueToEncoding (P.ScalarField P.Int32Field) = AE.int32
+fieldValueToEncoding (P.ScalarField P.Int64Field) = AE.int64Text
+fieldValueToEncoding (P.ScalarField P.UInt32Field) = AE.word32
+fieldValueToEncoding (P.ScalarField P.UInt64Field) = AE.word64Text
+fieldValueToEncoding (P.ScalarField P.SInt32Field) = AE.int32
+fieldValueToEncoding (P.ScalarField P.SInt64Field) = AE.int64Text
+fieldValueToEncoding (P.ScalarField P.Fixed32Field) = AE.word32
+fieldValueToEncoding (P.ScalarField P.Fixed64Field) = AE.word64Text
+fieldValueToEncoding (P.ScalarField P.SFixed32Field) = AE.int32
+fieldValueToEncoding (P.ScalarField P.SFixed64Field) = AE.int64Text
+fieldValueToEncoding (P.ScalarField P.FloatField) = realFloatToEncoding AE.float
+fieldValueToEncoding (P.ScalarField P.DoubleField) = realFloatToEncoding AE.double
+fieldValueToEncoding (P.ScalarField P.BoolField) = AE.bool
+fieldValueToEncoding (P.ScalarField P.StringField) = AE.text
+fieldValueToEncoding (P.ScalarField P.BytesField) = AE.unsafeToEncoding . quote . B.byteString . B64.encode
+  where quote b = B.char8 '"' <> b <> B.char8 '"'
 
 realFloatToEncoding :: RealFloat a => (a -> AE.Encoding) -> a -> AE.Encoding
 realFloatToEncoding e d
@@ -75,24 +74,24 @@ realFloatToEncoding e d
   | otherwise    = e d
 
 keyValueToEncoding :: P.FieldTypeDescriptor value -> value -> AE.Encoding' Text.Text
-keyValueToEncoding P.Int32Field = AE.int32Text
-keyValueToEncoding P.Int64Field = AE.int64Text
-keyValueToEncoding P.UInt32Field = AE.word32Text
-keyValueToEncoding P.UInt64Field = AE.word64Text
-keyValueToEncoding P.SInt32Field = AE.int32Text
-keyValueToEncoding P.SInt64Field = AE.int64Text
-keyValueToEncoding P.Fixed32Field = AE.word32Text
-keyValueToEncoding P.Fixed64Field = AE.word64Text
-keyValueToEncoding P.SFixed32Field = AE.int32Text
-keyValueToEncoding P.SFixed64Field = AE.int64Text
-keyValueToEncoding P.BoolField = \b -> AE.text $ if b then "true" else "false"
-keyValueToEncoding P.StringField = AE.text
+keyValueToEncoding (P.ScalarField P.Int32Field) = AE.int32Text
+keyValueToEncoding (P.ScalarField P.Int64Field) = AE.int64Text
+keyValueToEncoding (P.ScalarField P.UInt32Field) = AE.word32Text
+keyValueToEncoding (P.ScalarField P.UInt64Field) = AE.word64Text
+keyValueToEncoding (P.ScalarField P.SInt32Field) = AE.int32Text
+keyValueToEncoding (P.ScalarField P.SInt64Field) = AE.int64Text
+keyValueToEncoding (P.ScalarField P.Fixed32Field) = AE.word32Text
+keyValueToEncoding (P.ScalarField P.Fixed64Field) = AE.word64Text
+keyValueToEncoding (P.ScalarField P.SFixed32Field) = AE.int32Text
+keyValueToEncoding (P.ScalarField P.SFixed64Field) = AE.int64Text
+keyValueToEncoding (P.ScalarField P.BoolField) = \b -> AE.text $ if b then "true" else "false"
+keyValueToEncoding (P.ScalarField P.StringField) = AE.text
 keyValueToEncoding t = const $ error $ "[BUG] unsupported type for map key: " ++ show t
 
 lookupDescOrDie :: P.Message entry => P.FieldAccessor msg entry -> P.Tag -> P.FieldDescriptor entry
 lookupDescOrDie _ t =
   maybe (error $ "[BUG] missing field in map entry: " ++ show t) id $
-    Map.lookup t (P.fieldsByTag P.descriptor)
+    Map.lookup t P.fieldsByTag
 
 entryKeyTag, entryValueTag :: P.Tag
 entryKeyTag = 1

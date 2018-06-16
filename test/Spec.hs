@@ -17,6 +17,7 @@ import Lens.Family2 ((.~))
 import Test.Hspec
 
 import Proto.JsonFormatProto3
+import Proto.JsonFormatProto3_Fields
 
 main :: IO ()
 main = hspec spec
@@ -145,7 +146,7 @@ spec = do
     (def :: TestOneof) `shouldEncodeAs` [aesonQQ| {} |]
     (def & oneofInt32Value .~ 0 :: TestOneof) `shouldEncodeAs` [aesonQQ| { oneofInt32Value: 0 } |]
 
-  it "currently encodes all present members of the oneof (limitation of proto-lens)" $
+  it "encodes last set value for oneof field" $
     let oneof :: TestOneof
         oneof = (def & oneofInt32Value .~ 0 & oneofStringValue .~ "test" :: TestOneof) in
-      oneof `shouldEncodeAs` [aesonQQ| { oneofInt32Value: 0, oneofStringValue: "test" } |]
+      oneof `shouldEncodeAs` [aesonQQ| { oneofStringValue: "test" } |]
