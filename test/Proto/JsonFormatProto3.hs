@@ -7,45 +7,44 @@
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
 module Proto.JsonFormatProto3
        (EnumType(..), EnumType(), EnumType'UnrecognizedValue,
-        MessageType(..), TestMap(..), TestMap'BoolMapEntry(..),
-        TestMap'Int32MapEntry(..), TestMap'Int64MapEntry(..),
-        TestMap'StringMapEntry(..), TestMap'Uint32MapEntry(..),
-        TestMap'Uint64MapEntry(..), TestMessage(..), TestNestedMap(..),
-        TestNestedMap'BoolMapEntry(..), TestNestedMap'Int32MapEntry(..),
-        TestNestedMap'Int64MapEntry(..), TestNestedMap'MapMapEntry(..),
-        TestNestedMap'StringMapEntry(..), TestNestedMap'Uint32MapEntry(..),
-        TestNestedMap'Uint64MapEntry(..), TestOneof(..),
+        MessageType(), TestMap(), TestMap'BoolMapEntry(),
+        TestMap'Int32MapEntry(), TestMap'Int64MapEntry(),
+        TestMap'StringMapEntry(), TestMap'Uint32MapEntry(),
+        TestMap'Uint64MapEntry(), TestMessage(), TestNestedMap(),
+        TestNestedMap'BoolMapEntry(), TestNestedMap'Int32MapEntry(),
+        TestNestedMap'Int64MapEntry(), TestNestedMap'MapMapEntry(),
+        TestNestedMap'StringMapEntry(), TestNestedMap'Uint32MapEntry(),
+        TestNestedMap'Uint64MapEntry(), TestOneof(),
         TestOneof'OneofValue(..), _TestOneof'OneofInt32Value,
         _TestOneof'OneofStringValue, _TestOneof'OneofBytesValue,
         _TestOneof'OneofEnumValue, _TestOneof'OneofMessageValue)
        where
-import qualified Data.ProtoLens.Reexport.Lens.Labels.Prism
+import qualified Data.ProtoLens.Runtime.Control.DeepSeq
+       as Control.DeepSeq
+import qualified Data.ProtoLens.Runtime.Lens.Labels.Prism
        as Lens.Labels.Prism
-import qualified Data.ProtoLens.Reexport.Prelude as Prelude
-import qualified Data.ProtoLens.Reexport.Data.Int as Data.Int
-import qualified Data.ProtoLens.Reexport.Data.Word as Data.Word
-import qualified Data.ProtoLens.Reexport.Data.ProtoLens
+import qualified Data.ProtoLens.Runtime.Prelude as Prelude
+import qualified Data.ProtoLens.Runtime.Data.Int as Data.Int
+import qualified Data.ProtoLens.Runtime.Data.Word as Data.Word
+import qualified Data.ProtoLens.Runtime.Data.ProtoLens
        as Data.ProtoLens
-import qualified
-       Data.ProtoLens.Reexport.Data.ProtoLens.Message.Enum
+import qualified Data.ProtoLens.Runtime.Data.ProtoLens.Message.Enum
        as Data.ProtoLens.Message.Enum
 import qualified
-       Data.ProtoLens.Reexport.Data.ProtoLens.Service.Types
+       Data.ProtoLens.Runtime.Data.ProtoLens.Service.Types
        as Data.ProtoLens.Service.Types
-import qualified Data.ProtoLens.Reexport.Lens.Family2
+import qualified Data.ProtoLens.Runtime.Lens.Family2
        as Lens.Family2
-import qualified Data.ProtoLens.Reexport.Lens.Family2.Unchecked
+import qualified Data.ProtoLens.Runtime.Lens.Family2.Unchecked
        as Lens.Family2.Unchecked
-import qualified Data.ProtoLens.Reexport.Data.Default.Class
-       as Data.Default.Class
-import qualified Data.ProtoLens.Reexport.Data.Text as Data.Text
-import qualified Data.ProtoLens.Reexport.Data.Map as Data.Map
-import qualified Data.ProtoLens.Reexport.Data.ByteString
+import qualified Data.ProtoLens.Runtime.Data.Text as Data.Text
+import qualified Data.ProtoLens.Runtime.Data.Map as Data.Map
+import qualified Data.ProtoLens.Runtime.Data.ByteString
        as Data.ByteString
-import qualified Data.ProtoLens.Reexport.Data.ByteString.Char8
+import qualified Data.ProtoLens.Runtime.Data.ByteString.Char8
        as Data.ByteString.Char8
-import qualified Data.ProtoLens.Reexport.Lens.Labels as Lens.Labels
-import qualified Data.ProtoLens.Reexport.Text.Read as Text.Read
+import qualified Data.ProtoLens.Runtime.Lens.Labels as Lens.Labels
+import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
 
 data EnumType = FOO
               | BAR
@@ -99,10 +98,10 @@ instance Prelude.Enum EnumType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Data.Default.Class.Default EnumType where
-        def = FOO
 instance Data.ProtoLens.FieldDefault EnumType where
         fieldDefault = FOO
+instance Control.DeepSeq.NFData EnumType where
+        rnf x__ = Prelude.seq x__ (())
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.value' @:: Lens' MessageType Data.Int.Int32@
@@ -110,23 +109,19 @@ instance Data.ProtoLens.FieldDefault EnumType where
 data MessageType = MessageType{_MessageType'value ::
                                !Data.Int.Int32,
                                _MessageType'_unknownFields :: !Data.ProtoLens.FieldSet}
-                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f MessageType x a, a ~ b) =>
-         Lens.Labels.HasLens f MessageType MessageType x a b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f MessageType "value" (Data.Int.Int32)
+                     deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show MessageType where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' MessageType "value" (Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageType'value
                  (\ x__ y__ -> x__{_MessageType'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default MessageType where
-        def
-          = MessageType{_MessageType'value = Data.ProtoLens.fieldDefault,
-                        _MessageType'_unknownFields = ([])}
 instance Data.ProtoLens.Message MessageType where
         messageName _ = Data.Text.pack "proto3.MessageType"
         fieldsByTag
@@ -135,7 +130,7 @@ instance Data.ProtoLens.Message MessageType where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor MessageType
               in
@@ -143,6 +138,14 @@ instance Data.ProtoLens.Message MessageType where
         unknownFields
           = Lens.Family2.Unchecked.lens _MessageType'_unknownFields
               (\ x__ y__ -> x__{_MessageType'_unknownFields = y__})
+        defMessage
+          = MessageType{_MessageType'value = Data.ProtoLens.fieldDefault,
+                        _MessageType'_unknownFields = ([])}
+instance Control.DeepSeq.NFData MessageType where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_MessageType'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_MessageType'value x__) (()))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.boolMap' @:: Lens' TestMap (Data.Map.Map Prelude.Bool Data.Int.Int32)@
@@ -163,13 +166,13 @@ data TestMap = TestMap{_TestMap'boolMap ::
                        _TestMap'stringMap ::
                        !(Data.Map.Map Data.Text.Text Data.Int.Int32),
                        _TestMap'_unknownFields :: !Data.ProtoLens.FieldSet}
-                 deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap x a, a ~ b) =>
-         Lens.Labels.HasLens f TestMap TestMap x a b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap "boolMap"
+                 deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap "boolMap"
            (Data.Map.Map Prelude.Bool Data.Int.Int32)
          where
         lensOf' _
@@ -177,8 +180,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'boolMap
                  (\ x__ y__ -> x__{_TestMap'boolMap = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap "int32Map"
+instance Lens.Labels.HasLens' TestMap "int32Map"
            (Data.Map.Map Data.Int.Int32 Data.Int.Int32)
          where
         lensOf' _
@@ -186,8 +188,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'int32Map
                  (\ x__ y__ -> x__{_TestMap'int32Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap "int64Map"
+instance Lens.Labels.HasLens' TestMap "int64Map"
            (Data.Map.Map Data.Int.Int64 Data.Int.Int32)
          where
         lensOf' _
@@ -195,8 +196,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'int64Map
                  (\ x__ y__ -> x__{_TestMap'int64Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap "uint32Map"
+instance Lens.Labels.HasLens' TestMap "uint32Map"
            (Data.Map.Map Data.Word.Word32 Data.Int.Int32)
          where
         lensOf' _
@@ -204,8 +204,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'uint32Map
                  (\ x__ y__ -> x__{_TestMap'uint32Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap "uint64Map"
+instance Lens.Labels.HasLens' TestMap "uint64Map"
            (Data.Map.Map Data.Word.Word64 Data.Int.Int32)
          where
         lensOf' _
@@ -213,8 +212,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'uint64Map
                  (\ x__ y__ -> x__{_TestMap'uint64Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap "stringMap"
+instance Lens.Labels.HasLens' TestMap "stringMap"
            (Data.Map.Map Data.Text.Text Data.Int.Int32)
          where
         lensOf' _
@@ -222,15 +220,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'stringMap
                  (\ x__ y__ -> x__{_TestMap'stringMap = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap where
-        def
-          = TestMap{_TestMap'boolMap = Data.Map.empty,
-                    _TestMap'int32Map = Data.Map.empty,
-                    _TestMap'int64Map = Data.Map.empty,
-                    _TestMap'uint32Map = Data.Map.empty,
-                    _TestMap'uint64Map = Data.Map.empty,
-                    _TestMap'stringMap = Data.Map.empty,
-                    _TestMap'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap where
         messageName _ = Data.Text.pack "proto3.TestMap"
         fieldsByTag
@@ -239,11 +228,11 @@ instance Data.ProtoLens.Message TestMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestMap'BoolMapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "boolMap")))
                       :: Data.ProtoLens.FieldDescriptor TestMap
                 int32Map__field_descriptor
@@ -251,11 +240,11 @@ instance Data.ProtoLens.Message TestMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestMap'Int32MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "int32Map")))
                       :: Data.ProtoLens.FieldDescriptor TestMap
                 int64Map__field_descriptor
@@ -263,11 +252,11 @@ instance Data.ProtoLens.Message TestMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestMap'Int64MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "int64Map")))
                       :: Data.ProtoLens.FieldDescriptor TestMap
                 uint32Map__field_descriptor
@@ -275,11 +264,11 @@ instance Data.ProtoLens.Message TestMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestMap'Uint32MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "uint32Map")))
                       :: Data.ProtoLens.FieldDescriptor TestMap
                 uint64Map__field_descriptor
@@ -287,11 +276,11 @@ instance Data.ProtoLens.Message TestMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestMap'Uint64MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "uint64Map")))
                       :: Data.ProtoLens.FieldDescriptor TestMap
                 stringMap__field_descriptor
@@ -299,11 +288,11 @@ instance Data.ProtoLens.Message TestMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestMap'StringMapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "stringMap")))
                       :: Data.ProtoLens.FieldDescriptor TestMap
               in
@@ -317,6 +306,24 @@ instance Data.ProtoLens.Message TestMap where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestMap'_unknownFields
               (\ x__ y__ -> x__{_TestMap'_unknownFields = y__})
+        defMessage
+          = TestMap{_TestMap'boolMap = Data.Map.empty,
+                    _TestMap'int32Map = Data.Map.empty,
+                    _TestMap'int64Map = Data.Map.empty,
+                    _TestMap'uint32Map = Data.Map.empty,
+                    _TestMap'uint64Map = Data.Map.empty,
+                    _TestMap'stringMap = Data.Map.empty,
+                    _TestMap'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestMap'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'boolMap x__)
+                   (Control.DeepSeq.deepseq (_TestMap'int32Map x__)
+                      (Control.DeepSeq.deepseq (_TestMap'int64Map x__)
+                         (Control.DeepSeq.deepseq (_TestMap'uint32Map x__)
+                            (Control.DeepSeq.deepseq (_TestMap'uint64Map x__)
+                               (Control.DeepSeq.deepseq (_TestMap'stringMap x__) (())))))))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestMap'BoolMapEntry Prelude.Bool@
@@ -327,23 +334,21 @@ data TestMap'BoolMapEntry = TestMap'BoolMapEntry{_TestMap'BoolMapEntry'key
                                                  _TestMap'BoolMapEntry'value :: !Data.Int.Int32,
                                                  _TestMap'BoolMapEntry'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
-                              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap'BoolMapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestMap'BoolMapEntry TestMap'BoolMapEntry x a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'BoolMapEntry "key" (Prelude.Bool)
+                              deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap'BoolMapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap'BoolMapEntry "key"
+           (Prelude.Bool)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMap'BoolMapEntry'key
                  (\ x__ y__ -> x__{_TestMap'BoolMapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'BoolMapEntry "value"
+instance Lens.Labels.HasLens' TestMap'BoolMapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -351,12 +356,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'BoolMapEntry'value
                  (\ x__ y__ -> x__{_TestMap'BoolMapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap'BoolMapEntry where
-        def
-          = TestMap'BoolMapEntry{_TestMap'BoolMapEntry'key =
-                                   Data.ProtoLens.fieldDefault,
-                                 _TestMap'BoolMapEntry'value = Data.ProtoLens.fieldDefault,
-                                 _TestMap'BoolMapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap'BoolMapEntry where
         messageName _ = Data.Text.pack "proto3.TestMap.BoolMapEntry"
         fieldsByTag
@@ -365,7 +364,7 @@ instance Data.ProtoLens.Message TestMap'BoolMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'BoolMapEntry
                 value__field_descriptor
@@ -373,7 +372,7 @@ instance Data.ProtoLens.Message TestMap'BoolMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'BoolMapEntry
               in
@@ -383,6 +382,17 @@ instance Data.ProtoLens.Message TestMap'BoolMapEntry where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestMap'BoolMapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestMap'BoolMapEntry'_unknownFields = y__})
+        defMessage
+          = TestMap'BoolMapEntry{_TestMap'BoolMapEntry'key =
+                                   Data.ProtoLens.fieldDefault,
+                                 _TestMap'BoolMapEntry'value = Data.ProtoLens.fieldDefault,
+                                 _TestMap'BoolMapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap'BoolMapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestMap'BoolMapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'BoolMapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestMap'BoolMapEntry'value x__) (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestMap'Int32MapEntry Data.Int.Int32@
@@ -393,24 +403,21 @@ data TestMap'Int32MapEntry = TestMap'Int32MapEntry{_TestMap'Int32MapEntry'key
                                                    _TestMap'Int32MapEntry'value :: !Data.Int.Int32,
                                                    _TestMap'Int32MapEntry'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
-                               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap'Int32MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestMap'Int32MapEntry TestMap'Int32MapEntry x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Int32MapEntry "key" (Data.Int.Int32)
+                               deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap'Int32MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap'Int32MapEntry "key"
+           (Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMap'Int32MapEntry'key
                  (\ x__ y__ -> x__{_TestMap'Int32MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Int32MapEntry "value"
+instance Lens.Labels.HasLens' TestMap'Int32MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -418,12 +425,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'Int32MapEntry'value
                  (\ x__ y__ -> x__{_TestMap'Int32MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap'Int32MapEntry where
-        def
-          = TestMap'Int32MapEntry{_TestMap'Int32MapEntry'key =
-                                    Data.ProtoLens.fieldDefault,
-                                  _TestMap'Int32MapEntry'value = Data.ProtoLens.fieldDefault,
-                                  _TestMap'Int32MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap'Int32MapEntry where
         messageName _ = Data.Text.pack "proto3.TestMap.Int32MapEntry"
         fieldsByTag
@@ -432,7 +433,7 @@ instance Data.ProtoLens.Message TestMap'Int32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Int32MapEntry
                 value__field_descriptor
@@ -440,7 +441,7 @@ instance Data.ProtoLens.Message TestMap'Int32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Int32MapEntry
               in
@@ -450,6 +451,17 @@ instance Data.ProtoLens.Message TestMap'Int32MapEntry where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestMap'Int32MapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestMap'Int32MapEntry'_unknownFields = y__})
+        defMessage
+          = TestMap'Int32MapEntry{_TestMap'Int32MapEntry'key =
+                                    Data.ProtoLens.fieldDefault,
+                                  _TestMap'Int32MapEntry'value = Data.ProtoLens.fieldDefault,
+                                  _TestMap'Int32MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap'Int32MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestMap'Int32MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'Int32MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestMap'Int32MapEntry'value x__) (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestMap'Int64MapEntry Data.Int.Int64@
@@ -460,24 +472,21 @@ data TestMap'Int64MapEntry = TestMap'Int64MapEntry{_TestMap'Int64MapEntry'key
                                                    _TestMap'Int64MapEntry'value :: !Data.Int.Int32,
                                                    _TestMap'Int64MapEntry'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
-                               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap'Int64MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestMap'Int64MapEntry TestMap'Int64MapEntry x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Int64MapEntry "key" (Data.Int.Int64)
+                               deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap'Int64MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap'Int64MapEntry "key"
+           (Data.Int.Int64)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMap'Int64MapEntry'key
                  (\ x__ y__ -> x__{_TestMap'Int64MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Int64MapEntry "value"
+instance Lens.Labels.HasLens' TestMap'Int64MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -485,12 +494,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'Int64MapEntry'value
                  (\ x__ y__ -> x__{_TestMap'Int64MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap'Int64MapEntry where
-        def
-          = TestMap'Int64MapEntry{_TestMap'Int64MapEntry'key =
-                                    Data.ProtoLens.fieldDefault,
-                                  _TestMap'Int64MapEntry'value = Data.ProtoLens.fieldDefault,
-                                  _TestMap'Int64MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap'Int64MapEntry where
         messageName _ = Data.Text.pack "proto3.TestMap.Int64MapEntry"
         fieldsByTag
@@ -499,7 +502,7 @@ instance Data.ProtoLens.Message TestMap'Int64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int64)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Int64MapEntry
                 value__field_descriptor
@@ -507,7 +510,7 @@ instance Data.ProtoLens.Message TestMap'Int64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Int64MapEntry
               in
@@ -517,6 +520,17 @@ instance Data.ProtoLens.Message TestMap'Int64MapEntry where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestMap'Int64MapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestMap'Int64MapEntry'_unknownFields = y__})
+        defMessage
+          = TestMap'Int64MapEntry{_TestMap'Int64MapEntry'key =
+                                    Data.ProtoLens.fieldDefault,
+                                  _TestMap'Int64MapEntry'value = Data.ProtoLens.fieldDefault,
+                                  _TestMap'Int64MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap'Int64MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestMap'Int64MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'Int64MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestMap'Int64MapEntry'value x__) (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestMap'StringMapEntry Data.Text.Text@
@@ -528,17 +542,13 @@ data TestMap'StringMapEntry = TestMap'StringMapEntry{_TestMap'StringMapEntry'key
                                                      !Data.Int.Int32,
                                                      _TestMap'StringMapEntry'_unknownFields ::
                                                      !Data.ProtoLens.FieldSet}
-                                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap'StringMapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestMap'StringMapEntry TestMap'StringMapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'StringMapEntry "key"
+                                deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap'StringMapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap'StringMapEntry "key"
            (Data.Text.Text)
          where
         lensOf' _
@@ -546,8 +556,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'StringMapEntry'key
                  (\ x__ y__ -> x__{_TestMap'StringMapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'StringMapEntry "value"
+instance Lens.Labels.HasLens' TestMap'StringMapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -555,12 +564,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'StringMapEntry'value
                  (\ x__ y__ -> x__{_TestMap'StringMapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap'StringMapEntry where
-        def
-          = TestMap'StringMapEntry{_TestMap'StringMapEntry'key =
-                                     Data.ProtoLens.fieldDefault,
-                                   _TestMap'StringMapEntry'value = Data.ProtoLens.fieldDefault,
-                                   _TestMap'StringMapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap'StringMapEntry where
         messageName _ = Data.Text.pack "proto3.TestMap.StringMapEntry"
         fieldsByTag
@@ -569,7 +572,7 @@ instance Data.ProtoLens.Message TestMap'StringMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'StringMapEntry
                 value__field_descriptor
@@ -577,7 +580,7 @@ instance Data.ProtoLens.Message TestMap'StringMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'StringMapEntry
               in
@@ -588,6 +591,18 @@ instance Data.ProtoLens.Message TestMap'StringMapEntry where
           = Lens.Family2.Unchecked.lens
               _TestMap'StringMapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestMap'StringMapEntry'_unknownFields = y__})
+        defMessage
+          = TestMap'StringMapEntry{_TestMap'StringMapEntry'key =
+                                     Data.ProtoLens.fieldDefault,
+                                   _TestMap'StringMapEntry'value = Data.ProtoLens.fieldDefault,
+                                   _TestMap'StringMapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap'StringMapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestMap'StringMapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'StringMapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestMap'StringMapEntry'value x__) (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestMap'Uint32MapEntry Data.Word.Word32@
@@ -599,17 +614,13 @@ data TestMap'Uint32MapEntry = TestMap'Uint32MapEntry{_TestMap'Uint32MapEntry'key
                                                      !Data.Int.Int32,
                                                      _TestMap'Uint32MapEntry'_unknownFields ::
                                                      !Data.ProtoLens.FieldSet}
-                                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap'Uint32MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestMap'Uint32MapEntry TestMap'Uint32MapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Uint32MapEntry "key"
+                                deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap'Uint32MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap'Uint32MapEntry "key"
            (Data.Word.Word32)
          where
         lensOf' _
@@ -617,8 +628,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'Uint32MapEntry'key
                  (\ x__ y__ -> x__{_TestMap'Uint32MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Uint32MapEntry "value"
+instance Lens.Labels.HasLens' TestMap'Uint32MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -626,12 +636,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'Uint32MapEntry'value
                  (\ x__ y__ -> x__{_TestMap'Uint32MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap'Uint32MapEntry where
-        def
-          = TestMap'Uint32MapEntry{_TestMap'Uint32MapEntry'key =
-                                     Data.ProtoLens.fieldDefault,
-                                   _TestMap'Uint32MapEntry'value = Data.ProtoLens.fieldDefault,
-                                   _TestMap'Uint32MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap'Uint32MapEntry where
         messageName _ = Data.Text.pack "proto3.TestMap.Uint32MapEntry"
         fieldsByTag
@@ -640,7 +644,7 @@ instance Data.ProtoLens.Message TestMap'Uint32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Uint32MapEntry
                 value__field_descriptor
@@ -648,7 +652,7 @@ instance Data.ProtoLens.Message TestMap'Uint32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Uint32MapEntry
               in
@@ -659,6 +663,18 @@ instance Data.ProtoLens.Message TestMap'Uint32MapEntry where
           = Lens.Family2.Unchecked.lens
               _TestMap'Uint32MapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestMap'Uint32MapEntry'_unknownFields = y__})
+        defMessage
+          = TestMap'Uint32MapEntry{_TestMap'Uint32MapEntry'key =
+                                     Data.ProtoLens.fieldDefault,
+                                   _TestMap'Uint32MapEntry'value = Data.ProtoLens.fieldDefault,
+                                   _TestMap'Uint32MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap'Uint32MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestMap'Uint32MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'Uint32MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestMap'Uint32MapEntry'value x__) (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestMap'Uint64MapEntry Data.Word.Word64@
@@ -670,17 +686,13 @@ data TestMap'Uint64MapEntry = TestMap'Uint64MapEntry{_TestMap'Uint64MapEntry'key
                                                      !Data.Int.Int32,
                                                      _TestMap'Uint64MapEntry'_unknownFields ::
                                                      !Data.ProtoLens.FieldSet}
-                                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMap'Uint64MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestMap'Uint64MapEntry TestMap'Uint64MapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Uint64MapEntry "key"
+                                deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMap'Uint64MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMap'Uint64MapEntry "key"
            (Data.Word.Word64)
          where
         lensOf' _
@@ -688,8 +700,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'Uint64MapEntry'key
                  (\ x__ y__ -> x__{_TestMap'Uint64MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMap'Uint64MapEntry "value"
+instance Lens.Labels.HasLens' TestMap'Uint64MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -697,12 +708,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMap'Uint64MapEntry'value
                  (\ x__ y__ -> x__{_TestMap'Uint64MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMap'Uint64MapEntry where
-        def
-          = TestMap'Uint64MapEntry{_TestMap'Uint64MapEntry'key =
-                                     Data.ProtoLens.fieldDefault,
-                                   _TestMap'Uint64MapEntry'value = Data.ProtoLens.fieldDefault,
-                                   _TestMap'Uint64MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMap'Uint64MapEntry where
         messageName _ = Data.Text.pack "proto3.TestMap.Uint64MapEntry"
         fieldsByTag
@@ -711,7 +716,7 @@ instance Data.ProtoLens.Message TestMap'Uint64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word64)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Uint64MapEntry
                 value__field_descriptor
@@ -719,7 +724,7 @@ instance Data.ProtoLens.Message TestMap'Uint64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestMap'Uint64MapEntry
               in
@@ -730,6 +735,18 @@ instance Data.ProtoLens.Message TestMap'Uint64MapEntry where
           = Lens.Family2.Unchecked.lens
               _TestMap'Uint64MapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestMap'Uint64MapEntry'_unknownFields = y__})
+        defMessage
+          = TestMap'Uint64MapEntry{_TestMap'Uint64MapEntry'key =
+                                     Data.ProtoLens.fieldDefault,
+                                   _TestMap'Uint64MapEntry'value = Data.ProtoLens.fieldDefault,
+                                   _TestMap'Uint64MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMap'Uint64MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestMap'Uint64MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMap'Uint64MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestMap'Uint64MapEntry'value x__) (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.boolValue' @:: Lens' TestMessage Prelude.Bool@
@@ -780,77 +797,77 @@ data TestMessage = TestMessage{_TestMessage'boolValue ::
                                _TestMessage'repeatedEnumValue :: ![EnumType],
                                _TestMessage'repeatedMessageValue :: ![MessageType],
                                _TestMessage'_unknownFields :: !Data.ProtoLens.FieldSet}
-                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestMessage x a, a ~ b) =>
-         Lens.Labels.HasLens f TestMessage TestMessage x a b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "boolValue" (Prelude.Bool)
+                     deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestMessage where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestMessage "boolValue"
+           (Prelude.Bool)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'boolValue
                  (\ x__ y__ -> x__{_TestMessage'boolValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "int32Value" (Data.Int.Int32)
+instance Lens.Labels.HasLens' TestMessage "int32Value"
+           (Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'int32Value
                  (\ x__ y__ -> x__{_TestMessage'int32Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "int64Value" (Data.Int.Int64)
+instance Lens.Labels.HasLens' TestMessage "int64Value"
+           (Data.Int.Int64)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'int64Value
                  (\ x__ y__ -> x__{_TestMessage'int64Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "uint32Value" (Data.Word.Word32)
+instance Lens.Labels.HasLens' TestMessage "uint32Value"
+           (Data.Word.Word32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'uint32Value
                  (\ x__ y__ -> x__{_TestMessage'uint32Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "uint64Value" (Data.Word.Word64)
+instance Lens.Labels.HasLens' TestMessage "uint64Value"
+           (Data.Word.Word64)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'uint64Value
                  (\ x__ y__ -> x__{_TestMessage'uint64Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "floatValue" (Prelude.Float)
+instance Lens.Labels.HasLens' TestMessage "floatValue"
+           (Prelude.Float)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'floatValue
                  (\ x__ y__ -> x__{_TestMessage'floatValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "doubleValue" (Prelude.Double)
+instance Lens.Labels.HasLens' TestMessage "doubleValue"
+           (Prelude.Double)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'doubleValue
                  (\ x__ y__ -> x__{_TestMessage'doubleValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "stringValue" (Data.Text.Text)
+instance Lens.Labels.HasLens' TestMessage "stringValue"
+           (Data.Text.Text)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'stringValue
                  (\ x__ y__ -> x__{_TestMessage'stringValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "bytesValue"
+instance Lens.Labels.HasLens' TestMessage "bytesValue"
            (Data.ByteString.ByteString)
          where
         lensOf' _
@@ -858,24 +875,22 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'bytesValue
                  (\ x__ y__ -> x__{_TestMessage'bytesValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "enumValue" (EnumType)
+instance Lens.Labels.HasLens' TestMessage "enumValue" (EnumType)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'enumValue
                  (\ x__ y__ -> x__{_TestMessage'enumValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "messageValue" (MessageType)
+instance Lens.Labels.HasLens' TestMessage "messageValue"
+           (MessageType)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'messageValue
                  (\ x__ y__ -> x__{_TestMessage'messageValue = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "maybe'messageValue"
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Lens.Labels.HasLens' TestMessage "maybe'messageValue"
            (Prelude.Maybe MessageType)
          where
         lensOf' _
@@ -883,8 +898,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'messageValue
                  (\ x__ y__ -> x__{_TestMessage'messageValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedBoolValue"
+instance Lens.Labels.HasLens' TestMessage "repeatedBoolValue"
            ([Prelude.Bool])
          where
         lensOf' _
@@ -892,8 +906,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedBoolValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedBoolValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedInt32Value"
+instance Lens.Labels.HasLens' TestMessage "repeatedInt32Value"
            ([Data.Int.Int32])
          where
         lensOf' _
@@ -901,8 +914,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedInt32Value
                  (\ x__ y__ -> x__{_TestMessage'repeatedInt32Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedInt64Value"
+instance Lens.Labels.HasLens' TestMessage "repeatedInt64Value"
            ([Data.Int.Int64])
          where
         lensOf' _
@@ -910,8 +922,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedInt64Value
                  (\ x__ y__ -> x__{_TestMessage'repeatedInt64Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedUint32Value"
+instance Lens.Labels.HasLens' TestMessage "repeatedUint32Value"
            ([Data.Word.Word32])
          where
         lensOf' _
@@ -919,8 +930,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedUint32Value
                  (\ x__ y__ -> x__{_TestMessage'repeatedUint32Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedUint64Value"
+instance Lens.Labels.HasLens' TestMessage "repeatedUint64Value"
            ([Data.Word.Word64])
          where
         lensOf' _
@@ -928,8 +938,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedUint64Value
                  (\ x__ y__ -> x__{_TestMessage'repeatedUint64Value = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedFloatValue"
+instance Lens.Labels.HasLens' TestMessage "repeatedFloatValue"
            ([Prelude.Float])
          where
         lensOf' _
@@ -937,8 +946,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedFloatValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedFloatValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedDoubleValue"
+instance Lens.Labels.HasLens' TestMessage "repeatedDoubleValue"
            ([Prelude.Double])
          where
         lensOf' _
@@ -946,8 +954,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedDoubleValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedDoubleValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedStringValue"
+instance Lens.Labels.HasLens' TestMessage "repeatedStringValue"
            ([Data.Text.Text])
          where
         lensOf' _
@@ -955,8 +962,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedStringValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedStringValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedBytesValue"
+instance Lens.Labels.HasLens' TestMessage "repeatedBytesValue"
            ([Data.ByteString.ByteString])
          where
         lensOf' _
@@ -964,16 +970,15 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedBytesValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedBytesValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedEnumValue" ([EnumType])
+instance Lens.Labels.HasLens' TestMessage "repeatedEnumValue"
+           ([EnumType])
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedEnumValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedEnumValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestMessage "repeatedMessageValue"
+instance Lens.Labels.HasLens' TestMessage "repeatedMessageValue"
            ([MessageType])
          where
         lensOf' _
@@ -981,31 +986,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestMessage'repeatedMessageValue
                  (\ x__ y__ -> x__{_TestMessage'repeatedMessageValue = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestMessage where
-        def
-          = TestMessage{_TestMessage'boolValue = Data.ProtoLens.fieldDefault,
-                        _TestMessage'int32Value = Data.ProtoLens.fieldDefault,
-                        _TestMessage'int64Value = Data.ProtoLens.fieldDefault,
-                        _TestMessage'uint32Value = Data.ProtoLens.fieldDefault,
-                        _TestMessage'uint64Value = Data.ProtoLens.fieldDefault,
-                        _TestMessage'floatValue = Data.ProtoLens.fieldDefault,
-                        _TestMessage'doubleValue = Data.ProtoLens.fieldDefault,
-                        _TestMessage'stringValue = Data.ProtoLens.fieldDefault,
-                        _TestMessage'bytesValue = Data.ProtoLens.fieldDefault,
-                        _TestMessage'enumValue = Data.Default.Class.def,
-                        _TestMessage'messageValue = Prelude.Nothing,
-                        _TestMessage'repeatedBoolValue = [],
-                        _TestMessage'repeatedInt32Value = [],
-                        _TestMessage'repeatedInt64Value = [],
-                        _TestMessage'repeatedUint32Value = [],
-                        _TestMessage'repeatedUint64Value = [],
-                        _TestMessage'repeatedFloatValue = [],
-                        _TestMessage'repeatedDoubleValue = [],
-                        _TestMessage'repeatedStringValue = [],
-                        _TestMessage'repeatedBytesValue = [],
-                        _TestMessage'repeatedEnumValue = [],
-                        _TestMessage'repeatedMessageValue = [],
-                        _TestMessage'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestMessage where
         messageName _ = Data.Text.pack "proto3.TestMessage"
         fieldsByTag
@@ -1014,7 +994,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "boolValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 int32Value__field_descriptor
@@ -1022,7 +1002,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "int32Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 int64Value__field_descriptor
@@ -1030,7 +1010,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int64)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "int64Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 uint32Value__field_descriptor
@@ -1038,7 +1018,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "uint32Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 uint64Value__field_descriptor
@@ -1046,7 +1026,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word64)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "uint64Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 floatValue__field_descriptor
@@ -1054,7 +1034,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.FloatField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Float)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "floatValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 doubleValue__field_descriptor
@@ -1062,7 +1042,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.DoubleField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Double)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "doubleValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 stringValue__field_descriptor
@@ -1070,7 +1050,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "stringValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 bytesValue__field_descriptor
@@ -1078,7 +1058,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BytesField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.ByteString.ByteString)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "bytesValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 enumValue__field_descriptor
@@ -1086,7 +1066,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor EnumType)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "enumValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
                 messageValue__field_descriptor
@@ -1094,7 +1074,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MessageType)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "maybe'messageValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1103,7 +1083,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedBoolValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1112,7 +1092,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedInt32Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1121,7 +1101,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int64)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedInt64Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1130,7 +1110,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedUint32Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1139,7 +1119,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word64)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedUint64Value")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1148,7 +1128,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.FloatField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Float)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedFloatValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1157,7 +1137,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.DoubleField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Double)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedDoubleValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1166,7 +1146,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedStringValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1175,7 +1155,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BytesField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.ByteString.ByteString)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedBytesValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1184,7 +1164,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor EnumType)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedEnumValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1193,7 +1173,7 @@ instance Data.ProtoLens.Message TestMessage where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MessageType)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "repeatedMessageValue")))
                       :: Data.ProtoLens.FieldDescriptor TestMessage
@@ -1224,6 +1204,76 @@ instance Data.ProtoLens.Message TestMessage where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestMessage'_unknownFields
               (\ x__ y__ -> x__{_TestMessage'_unknownFields = y__})
+        defMessage
+          = TestMessage{_TestMessage'boolValue = Data.ProtoLens.fieldDefault,
+                        _TestMessage'int32Value = Data.ProtoLens.fieldDefault,
+                        _TestMessage'int64Value = Data.ProtoLens.fieldDefault,
+                        _TestMessage'uint32Value = Data.ProtoLens.fieldDefault,
+                        _TestMessage'uint64Value = Data.ProtoLens.fieldDefault,
+                        _TestMessage'floatValue = Data.ProtoLens.fieldDefault,
+                        _TestMessage'doubleValue = Data.ProtoLens.fieldDefault,
+                        _TestMessage'stringValue = Data.ProtoLens.fieldDefault,
+                        _TestMessage'bytesValue = Data.ProtoLens.fieldDefault,
+                        _TestMessage'enumValue = Data.ProtoLens.fieldDefault,
+                        _TestMessage'messageValue = Prelude.Nothing,
+                        _TestMessage'repeatedBoolValue = [],
+                        _TestMessage'repeatedInt32Value = [],
+                        _TestMessage'repeatedInt64Value = [],
+                        _TestMessage'repeatedUint32Value = [],
+                        _TestMessage'repeatedUint64Value = [],
+                        _TestMessage'repeatedFloatValue = [],
+                        _TestMessage'repeatedDoubleValue = [],
+                        _TestMessage'repeatedStringValue = [],
+                        _TestMessage'repeatedBytesValue = [],
+                        _TestMessage'repeatedEnumValue = [],
+                        _TestMessage'repeatedMessageValue = [],
+                        _TestMessage'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestMessage where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestMessage'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestMessage'boolValue x__)
+                   (Control.DeepSeq.deepseq (_TestMessage'int32Value x__)
+                      (Control.DeepSeq.deepseq (_TestMessage'int64Value x__)
+                         (Control.DeepSeq.deepseq (_TestMessage'uint32Value x__)
+                            (Control.DeepSeq.deepseq (_TestMessage'uint64Value x__)
+                               (Control.DeepSeq.deepseq (_TestMessage'floatValue x__)
+                                  (Control.DeepSeq.deepseq (_TestMessage'doubleValue x__)
+                                     (Control.DeepSeq.deepseq (_TestMessage'stringValue x__)
+                                        (Control.DeepSeq.deepseq (_TestMessage'bytesValue x__)
+                                           (Control.DeepSeq.deepseq (_TestMessage'enumValue x__)
+                                              (Control.DeepSeq.deepseq
+                                                 (_TestMessage'messageValue x__)
+                                                 (Control.DeepSeq.deepseq
+                                                    (_TestMessage'repeatedBoolValue x__)
+                                                    (Control.DeepSeq.deepseq
+                                                       (_TestMessage'repeatedInt32Value x__)
+                                                       (Control.DeepSeq.deepseq
+                                                          (_TestMessage'repeatedInt64Value x__)
+                                                          (Control.DeepSeq.deepseq
+                                                             (_TestMessage'repeatedUint32Value x__)
+                                                             (Control.DeepSeq.deepseq
+                                                                (_TestMessage'repeatedUint64Value
+                                                                   x__)
+                                                                (Control.DeepSeq.deepseq
+                                                                   (_TestMessage'repeatedFloatValue
+                                                                      x__)
+                                                                   (Control.DeepSeq.deepseq
+                                                                      (_TestMessage'repeatedDoubleValue
+                                                                         x__)
+                                                                      (Control.DeepSeq.deepseq
+                                                                         (_TestMessage'repeatedStringValue
+                                                                            x__)
+                                                                         (Control.DeepSeq.deepseq
+                                                                            (_TestMessage'repeatedBytesValue
+                                                                               x__)
+                                                                            (Control.DeepSeq.deepseq
+                                                                               (_TestMessage'repeatedEnumValue
+                                                                                  x__)
+                                                                               (Control.DeepSeq.deepseq
+                                                                                  (_TestMessage'repeatedMessageValue
+                                                                                     x__)
+                                                                                  (())))))))))))))))))))))))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.boolMap' @:: Lens' TestNestedMap (Data.Map.Map Prelude.Bool Data.Int.Int32)@
@@ -1249,13 +1299,13 @@ data TestNestedMap = TestNestedMap{_TestNestedMap'boolMap ::
                                    _TestNestedMap'mapMap ::
                                    !(Data.Map.Map Data.Text.Text TestNestedMap),
                                    _TestNestedMap'_unknownFields :: !Data.ProtoLens.FieldSet}
-                       deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap x a, a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap TestNestedMap x a b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "boolMap"
+                       deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap "boolMap"
            (Data.Map.Map Prelude.Bool Data.Int.Int32)
          where
         lensOf' _
@@ -1263,8 +1313,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'boolMap
                  (\ x__ y__ -> x__{_TestNestedMap'boolMap = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "int32Map"
+instance Lens.Labels.HasLens' TestNestedMap "int32Map"
            (Data.Map.Map Data.Int.Int32 Data.Int.Int32)
          where
         lensOf' _
@@ -1272,8 +1321,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'int32Map
                  (\ x__ y__ -> x__{_TestNestedMap'int32Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "int64Map"
+instance Lens.Labels.HasLens' TestNestedMap "int64Map"
            (Data.Map.Map Data.Int.Int64 Data.Int.Int32)
          where
         lensOf' _
@@ -1281,8 +1329,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'int64Map
                  (\ x__ y__ -> x__{_TestNestedMap'int64Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "uint32Map"
+instance Lens.Labels.HasLens' TestNestedMap "uint32Map"
            (Data.Map.Map Data.Word.Word32 Data.Int.Int32)
          where
         lensOf' _
@@ -1290,8 +1337,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'uint32Map
                  (\ x__ y__ -> x__{_TestNestedMap'uint32Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "uint64Map"
+instance Lens.Labels.HasLens' TestNestedMap "uint64Map"
            (Data.Map.Map Data.Word.Word64 Data.Int.Int32)
          where
         lensOf' _
@@ -1299,8 +1345,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'uint64Map
                  (\ x__ y__ -> x__{_TestNestedMap'uint64Map = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "stringMap"
+instance Lens.Labels.HasLens' TestNestedMap "stringMap"
            (Data.Map.Map Data.Text.Text Data.Int.Int32)
          where
         lensOf' _
@@ -1308,8 +1353,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'stringMap
                  (\ x__ y__ -> x__{_TestNestedMap'stringMap = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap "mapMap"
+instance Lens.Labels.HasLens' TestNestedMap "mapMap"
            (Data.Map.Map Data.Text.Text TestNestedMap)
          where
         lensOf' _
@@ -1317,16 +1361,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'mapMap
                  (\ x__ y__ -> x__{_TestNestedMap'mapMap = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap where
-        def
-          = TestNestedMap{_TestNestedMap'boolMap = Data.Map.empty,
-                          _TestNestedMap'int32Map = Data.Map.empty,
-                          _TestNestedMap'int64Map = Data.Map.empty,
-                          _TestNestedMap'uint32Map = Data.Map.empty,
-                          _TestNestedMap'uint64Map = Data.Map.empty,
-                          _TestNestedMap'stringMap = Data.Map.empty,
-                          _TestNestedMap'mapMap = Data.Map.empty,
-                          _TestNestedMap'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap where
         messageName _ = Data.Text.pack "proto3.TestNestedMap"
         fieldsByTag
@@ -1335,11 +1369,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'BoolMapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "boolMap")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
                 int32Map__field_descriptor
@@ -1347,11 +1381,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'Int32MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "int32Map")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
                 int64Map__field_descriptor
@@ -1359,11 +1393,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'Int64MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "int64Map")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
                 uint32Map__field_descriptor
@@ -1371,11 +1405,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'Uint32MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "uint32Map")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
                 uint64Map__field_descriptor
@@ -1383,11 +1417,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'Uint64MapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "uint64Map")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
                 stringMap__field_descriptor
@@ -1395,11 +1429,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'StringMapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "stringMap")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
                 mapMap__field_descriptor
@@ -1407,11 +1441,11 @@ instance Data.ProtoLens.Message TestNestedMap where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap'MapMapEntry)
                       (Data.ProtoLens.MapField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "mapMap")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap
               in
@@ -1426,6 +1460,26 @@ instance Data.ProtoLens.Message TestNestedMap where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestNestedMap'_unknownFields
               (\ x__ y__ -> x__{_TestNestedMap'_unknownFields = y__})
+        defMessage
+          = TestNestedMap{_TestNestedMap'boolMap = Data.Map.empty,
+                          _TestNestedMap'int32Map = Data.Map.empty,
+                          _TestNestedMap'int64Map = Data.Map.empty,
+                          _TestNestedMap'uint32Map = Data.Map.empty,
+                          _TestNestedMap'uint64Map = Data.Map.empty,
+                          _TestNestedMap'stringMap = Data.Map.empty,
+                          _TestNestedMap'mapMap = Data.Map.empty,
+                          _TestNestedMap'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestNestedMap'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'boolMap x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'int32Map x__)
+                      (Control.DeepSeq.deepseq (_TestNestedMap'int64Map x__)
+                         (Control.DeepSeq.deepseq (_TestNestedMap'uint32Map x__)
+                            (Control.DeepSeq.deepseq (_TestNestedMap'uint64Map x__)
+                               (Control.DeepSeq.deepseq (_TestNestedMap'stringMap x__)
+                                  (Control.DeepSeq.deepseq (_TestNestedMap'mapMap x__) (()))))))))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'BoolMapEntry Prelude.Bool@
@@ -1437,18 +1491,13 @@ data TestNestedMap'BoolMapEntry = TestNestedMap'BoolMapEntry{_TestNestedMap'Bool
                                                              !Data.Int.Int32,
                                                              _TestNestedMap'BoolMapEntry'_unknownFields
                                                              :: !Data.ProtoLens.FieldSet}
-                                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'BoolMapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'BoolMapEntry
-           TestNestedMap'BoolMapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'BoolMapEntry "key"
+                                    deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'BoolMapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'BoolMapEntry "key"
            (Prelude.Bool)
          where
         lensOf' _
@@ -1456,8 +1505,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'BoolMapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'BoolMapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'BoolMapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'BoolMapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1465,14 +1513,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'BoolMapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'BoolMapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'BoolMapEntry
-         where
-        def
-          = TestNestedMap'BoolMapEntry{_TestNestedMap'BoolMapEntry'key =
-                                         Data.ProtoLens.fieldDefault,
-                                       _TestNestedMap'BoolMapEntry'value =
-                                         Data.ProtoLens.fieldDefault,
-                                       _TestNestedMap'BoolMapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'BoolMapEntry where
         messageName _ = Data.Text.pack "proto3.TestNestedMap.BoolMapEntry"
         fieldsByTag
@@ -1481,7 +1521,7 @@ instance Data.ProtoLens.Message TestNestedMap'BoolMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'BoolMapEntry
                 value__field_descriptor
@@ -1489,7 +1529,7 @@ instance Data.ProtoLens.Message TestNestedMap'BoolMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'BoolMapEntry
               in
@@ -1501,6 +1541,20 @@ instance Data.ProtoLens.Message TestNestedMap'BoolMapEntry where
               _TestNestedMap'BoolMapEntry'_unknownFields
               (\ x__ y__ ->
                  x__{_TestNestedMap'BoolMapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'BoolMapEntry{_TestNestedMap'BoolMapEntry'key =
+                                         Data.ProtoLens.fieldDefault,
+                                       _TestNestedMap'BoolMapEntry'value =
+                                         Data.ProtoLens.fieldDefault,
+                                       _TestNestedMap'BoolMapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'BoolMapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'BoolMapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'BoolMapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'BoolMapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'Int32MapEntry Data.Int.Int32@
@@ -1512,18 +1566,13 @@ data TestNestedMap'Int32MapEntry = TestNestedMap'Int32MapEntry{_TestNestedMap'In
                                                                !Data.Int.Int32,
                                                                _TestNestedMap'Int32MapEntry'_unknownFields
                                                                :: !Data.ProtoLens.FieldSet}
-                                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'Int32MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'Int32MapEntry
-           TestNestedMap'Int32MapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Int32MapEntry "key"
+                                     deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'Int32MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'Int32MapEntry "key"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1531,8 +1580,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Int32MapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'Int32MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Int32MapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'Int32MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1540,14 +1588,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Int32MapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'Int32MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'Int32MapEntry
-         where
-        def
-          = TestNestedMap'Int32MapEntry{_TestNestedMap'Int32MapEntry'key =
-                                          Data.ProtoLens.fieldDefault,
-                                        _TestNestedMap'Int32MapEntry'value =
-                                          Data.ProtoLens.fieldDefault,
-                                        _TestNestedMap'Int32MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'Int32MapEntry where
         messageName _ = Data.Text.pack "proto3.TestNestedMap.Int32MapEntry"
         fieldsByTag
@@ -1556,7 +1596,7 @@ instance Data.ProtoLens.Message TestNestedMap'Int32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Int32MapEntry
                 value__field_descriptor
@@ -1564,7 +1604,7 @@ instance Data.ProtoLens.Message TestNestedMap'Int32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Int32MapEntry
               in
@@ -1576,6 +1616,20 @@ instance Data.ProtoLens.Message TestNestedMap'Int32MapEntry where
               _TestNestedMap'Int32MapEntry'_unknownFields
               (\ x__ y__ ->
                  x__{_TestNestedMap'Int32MapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'Int32MapEntry{_TestNestedMap'Int32MapEntry'key =
+                                          Data.ProtoLens.fieldDefault,
+                                        _TestNestedMap'Int32MapEntry'value =
+                                          Data.ProtoLens.fieldDefault,
+                                        _TestNestedMap'Int32MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'Int32MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'Int32MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'Int32MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'Int32MapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'Int64MapEntry Data.Int.Int64@
@@ -1587,18 +1641,13 @@ data TestNestedMap'Int64MapEntry = TestNestedMap'Int64MapEntry{_TestNestedMap'In
                                                                !Data.Int.Int32,
                                                                _TestNestedMap'Int64MapEntry'_unknownFields
                                                                :: !Data.ProtoLens.FieldSet}
-                                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'Int64MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'Int64MapEntry
-           TestNestedMap'Int64MapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Int64MapEntry "key"
+                                     deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'Int64MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'Int64MapEntry "key"
            (Data.Int.Int64)
          where
         lensOf' _
@@ -1606,8 +1655,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Int64MapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'Int64MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Int64MapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'Int64MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1615,14 +1663,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Int64MapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'Int64MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'Int64MapEntry
-         where
-        def
-          = TestNestedMap'Int64MapEntry{_TestNestedMap'Int64MapEntry'key =
-                                          Data.ProtoLens.fieldDefault,
-                                        _TestNestedMap'Int64MapEntry'value =
-                                          Data.ProtoLens.fieldDefault,
-                                        _TestNestedMap'Int64MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'Int64MapEntry where
         messageName _ = Data.Text.pack "proto3.TestNestedMap.Int64MapEntry"
         fieldsByTag
@@ -1631,7 +1671,7 @@ instance Data.ProtoLens.Message TestNestedMap'Int64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int64)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Int64MapEntry
                 value__field_descriptor
@@ -1639,7 +1679,7 @@ instance Data.ProtoLens.Message TestNestedMap'Int64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Int64MapEntry
               in
@@ -1651,6 +1691,20 @@ instance Data.ProtoLens.Message TestNestedMap'Int64MapEntry where
               _TestNestedMap'Int64MapEntry'_unknownFields
               (\ x__ y__ ->
                  x__{_TestNestedMap'Int64MapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'Int64MapEntry{_TestNestedMap'Int64MapEntry'key =
+                                          Data.ProtoLens.fieldDefault,
+                                        _TestNestedMap'Int64MapEntry'value =
+                                          Data.ProtoLens.fieldDefault,
+                                        _TestNestedMap'Int64MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'Int64MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'Int64MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'Int64MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'Int64MapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'MapMapEntry Data.Text.Text@
@@ -1663,18 +1717,13 @@ data TestNestedMap'MapMapEntry = TestNestedMap'MapMapEntry{_TestNestedMap'MapMap
                                                            !(Prelude.Maybe TestNestedMap),
                                                            _TestNestedMap'MapMapEntry'_unknownFields
                                                            :: !Data.ProtoLens.FieldSet}
-                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'MapMapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'MapMapEntry
-           TestNestedMap'MapMapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'MapMapEntry "key"
+                                   deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'MapMapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'MapMapEntry "key"
            (Data.Text.Text)
          where
         lensOf' _
@@ -1682,17 +1731,16 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'MapMapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'MapMapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'MapMapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'MapMapEntry "value"
            (TestNestedMap)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _TestNestedMap'MapMapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'MapMapEntry'value = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'MapMapEntry "maybe'value"
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Lens.Labels.HasLens' TestNestedMap'MapMapEntry
+           "maybe'value"
            (Prelude.Maybe TestNestedMap)
          where
         lensOf' _
@@ -1700,12 +1748,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'MapMapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'MapMapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'MapMapEntry where
-        def
-          = TestNestedMap'MapMapEntry{_TestNestedMap'MapMapEntry'key =
-                                        Data.ProtoLens.fieldDefault,
-                                      _TestNestedMap'MapMapEntry'value = Prelude.Nothing,
-                                      _TestNestedMap'MapMapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'MapMapEntry where
         messageName _ = Data.Text.pack "proto3.TestNestedMap.MapMapEntry"
         fieldsByTag
@@ -1714,7 +1756,7 @@ instance Data.ProtoLens.Message TestNestedMap'MapMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'MapMapEntry
                 value__field_descriptor
@@ -1722,7 +1764,7 @@ instance Data.ProtoLens.Message TestNestedMap'MapMapEntry where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor TestNestedMap)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'MapMapEntry
               in
@@ -1733,6 +1775,19 @@ instance Data.ProtoLens.Message TestNestedMap'MapMapEntry where
           = Lens.Family2.Unchecked.lens
               _TestNestedMap'MapMapEntry'_unknownFields
               (\ x__ y__ -> x__{_TestNestedMap'MapMapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'MapMapEntry{_TestNestedMap'MapMapEntry'key =
+                                        Data.ProtoLens.fieldDefault,
+                                      _TestNestedMap'MapMapEntry'value = Prelude.Nothing,
+                                      _TestNestedMap'MapMapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'MapMapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'MapMapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'MapMapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'MapMapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'StringMapEntry Data.Text.Text@
@@ -1744,18 +1799,13 @@ data TestNestedMap'StringMapEntry = TestNestedMap'StringMapEntry{_TestNestedMap'
                                                                  :: !Data.Int.Int32,
                                                                  _TestNestedMap'StringMapEntry'_unknownFields
                                                                  :: !Data.ProtoLens.FieldSet}
-                                      deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'StringMapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'StringMapEntry
-           TestNestedMap'StringMapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'StringMapEntry "key"
+                                      deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'StringMapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'StringMapEntry "key"
            (Data.Text.Text)
          where
         lensOf' _
@@ -1763,8 +1813,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'StringMapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'StringMapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'StringMapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'StringMapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1772,14 +1821,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'StringMapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'StringMapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'StringMapEntry
-         where
-        def
-          = TestNestedMap'StringMapEntry{_TestNestedMap'StringMapEntry'key =
-                                           Data.ProtoLens.fieldDefault,
-                                         _TestNestedMap'StringMapEntry'value =
-                                           Data.ProtoLens.fieldDefault,
-                                         _TestNestedMap'StringMapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'StringMapEntry where
         messageName _
           = Data.Text.pack "proto3.TestNestedMap.StringMapEntry"
@@ -1789,7 +1830,7 @@ instance Data.ProtoLens.Message TestNestedMap'StringMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'StringMapEntry
                 value__field_descriptor
@@ -1797,7 +1838,7 @@ instance Data.ProtoLens.Message TestNestedMap'StringMapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'StringMapEntry
               in
@@ -1809,6 +1850,20 @@ instance Data.ProtoLens.Message TestNestedMap'StringMapEntry where
               _TestNestedMap'StringMapEntry'_unknownFields
               (\ x__ y__ ->
                  x__{_TestNestedMap'StringMapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'StringMapEntry{_TestNestedMap'StringMapEntry'key =
+                                           Data.ProtoLens.fieldDefault,
+                                         _TestNestedMap'StringMapEntry'value =
+                                           Data.ProtoLens.fieldDefault,
+                                         _TestNestedMap'StringMapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'StringMapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'StringMapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'StringMapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'StringMapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'Uint32MapEntry Data.Word.Word32@
@@ -1820,18 +1875,13 @@ data TestNestedMap'Uint32MapEntry = TestNestedMap'Uint32MapEntry{_TestNestedMap'
                                                                  :: !Data.Int.Int32,
                                                                  _TestNestedMap'Uint32MapEntry'_unknownFields
                                                                  :: !Data.ProtoLens.FieldSet}
-                                      deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'Uint32MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'Uint32MapEntry
-           TestNestedMap'Uint32MapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Uint32MapEntry "key"
+                                      deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'Uint32MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'Uint32MapEntry "key"
            (Data.Word.Word32)
          where
         lensOf' _
@@ -1839,8 +1889,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Uint32MapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'Uint32MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Uint32MapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'Uint32MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1848,14 +1897,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Uint32MapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'Uint32MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'Uint32MapEntry
-         where
-        def
-          = TestNestedMap'Uint32MapEntry{_TestNestedMap'Uint32MapEntry'key =
-                                           Data.ProtoLens.fieldDefault,
-                                         _TestNestedMap'Uint32MapEntry'value =
-                                           Data.ProtoLens.fieldDefault,
-                                         _TestNestedMap'Uint32MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'Uint32MapEntry where
         messageName _
           = Data.Text.pack "proto3.TestNestedMap.Uint32MapEntry"
@@ -1865,7 +1906,7 @@ instance Data.ProtoLens.Message TestNestedMap'Uint32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Uint32MapEntry
                 value__field_descriptor
@@ -1873,7 +1914,7 @@ instance Data.ProtoLens.Message TestNestedMap'Uint32MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Uint32MapEntry
               in
@@ -1885,6 +1926,20 @@ instance Data.ProtoLens.Message TestNestedMap'Uint32MapEntry where
               _TestNestedMap'Uint32MapEntry'_unknownFields
               (\ x__ y__ ->
                  x__{_TestNestedMap'Uint32MapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'Uint32MapEntry{_TestNestedMap'Uint32MapEntry'key =
+                                           Data.ProtoLens.fieldDefault,
+                                         _TestNestedMap'Uint32MapEntry'value =
+                                           Data.ProtoLens.fieldDefault,
+                                         _TestNestedMap'Uint32MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'Uint32MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'Uint32MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'Uint32MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'Uint32MapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.key' @:: Lens' TestNestedMap'Uint64MapEntry Data.Word.Word64@
@@ -1896,18 +1951,13 @@ data TestNestedMap'Uint64MapEntry = TestNestedMap'Uint64MapEntry{_TestNestedMap'
                                                                  :: !Data.Int.Int32,
                                                                  _TestNestedMap'Uint64MapEntry'_unknownFields
                                                                  :: !Data.ProtoLens.FieldSet}
-                                      deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestNestedMap'Uint64MapEntry x a,
-          a ~ b) =>
-         Lens.Labels.HasLens f TestNestedMap'Uint64MapEntry
-           TestNestedMap'Uint64MapEntry
-           x
-           a
-           b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Uint64MapEntry "key"
+                                      deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestNestedMap'Uint64MapEntry where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' TestNestedMap'Uint64MapEntry "key"
            (Data.Word.Word64)
          where
         lensOf' _
@@ -1915,8 +1965,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Uint64MapEntry'key
                  (\ x__ y__ -> x__{_TestNestedMap'Uint64MapEntry'key = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestNestedMap'Uint64MapEntry "value"
+instance Lens.Labels.HasLens' TestNestedMap'Uint64MapEntry "value"
            (Data.Int.Int32)
          where
         lensOf' _
@@ -1924,14 +1973,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestNestedMap'Uint64MapEntry'value
                  (\ x__ y__ -> x__{_TestNestedMap'Uint64MapEntry'value = y__}))
               Prelude.id
-instance Data.Default.Class.Default TestNestedMap'Uint64MapEntry
-         where
-        def
-          = TestNestedMap'Uint64MapEntry{_TestNestedMap'Uint64MapEntry'key =
-                                           Data.ProtoLens.fieldDefault,
-                                         _TestNestedMap'Uint64MapEntry'value =
-                                           Data.ProtoLens.fieldDefault,
-                                         _TestNestedMap'Uint64MapEntry'_unknownFields = ([])}
 instance Data.ProtoLens.Message TestNestedMap'Uint64MapEntry where
         messageName _
           = Data.Text.pack "proto3.TestNestedMap.Uint64MapEntry"
@@ -1941,7 +1982,7 @@ instance Data.ProtoLens.Message TestNestedMap'Uint64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.UInt64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word64)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "key")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Uint64MapEntry
                 value__field_descriptor
@@ -1949,7 +1990,7 @@ instance Data.ProtoLens.Message TestNestedMap'Uint64MapEntry where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Optional
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor TestNestedMap'Uint64MapEntry
               in
@@ -1961,6 +2002,20 @@ instance Data.ProtoLens.Message TestNestedMap'Uint64MapEntry where
               _TestNestedMap'Uint64MapEntry'_unknownFields
               (\ x__ y__ ->
                  x__{_TestNestedMap'Uint64MapEntry'_unknownFields = y__})
+        defMessage
+          = TestNestedMap'Uint64MapEntry{_TestNestedMap'Uint64MapEntry'key =
+                                           Data.ProtoLens.fieldDefault,
+                                         _TestNestedMap'Uint64MapEntry'value =
+                                           Data.ProtoLens.fieldDefault,
+                                         _TestNestedMap'Uint64MapEntry'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestNestedMap'Uint64MapEntry where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_TestNestedMap'Uint64MapEntry'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestNestedMap'Uint64MapEntry'key x__)
+                   (Control.DeepSeq.deepseq (_TestNestedMap'Uint64MapEntry'value x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.JsonFormatProto3_Fields.maybe'oneofValue' @:: Lens' TestOneof (Prelude.Maybe TestOneof'OneofValue)@
@@ -1978,19 +2033,19 @@ instance Data.ProtoLens.Message TestNestedMap'Uint64MapEntry where
 data TestOneof = TestOneof{_TestOneof'oneofValue ::
                            !(Prelude.Maybe TestOneof'OneofValue),
                            _TestOneof'_unknownFields :: !Data.ProtoLens.FieldSet}
-                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                   deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show TestOneof where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 data TestOneof'OneofValue = TestOneof'OneofInt32Value !Data.Int.Int32
                           | TestOneof'OneofStringValue !Data.Text.Text
                           | TestOneof'OneofBytesValue !Data.ByteString.ByteString
                           | TestOneof'OneofEnumValue !EnumType
                           | TestOneof'OneofMessageValue !MessageType
                               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance (Lens.Labels.HasLens' f TestOneof x a, a ~ b) =>
-         Lens.Labels.HasLens f TestOneof TestOneof x a b
-         where
-        lensOf = Lens.Labels.lensOf'
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "maybe'oneofValue"
+instance Lens.Labels.HasLens' TestOneof "maybe'oneofValue"
            (Prelude.Maybe TestOneof'OneofValue)
          where
         lensOf' _
@@ -1998,8 +2053,7 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _TestOneof'oneofValue
                  (\ x__ y__ -> x__{_TestOneof'oneofValue = y__}))
               Prelude.id
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "maybe'oneofInt32Value"
+instance Lens.Labels.HasLens' TestOneof "maybe'oneofInt32Value"
            (Prelude.Maybe Data.Int.Int32)
          where
         lensOf' _
@@ -2013,8 +2067,8 @@ instance Prelude.Functor f =>
                                                                              x__val
                         _otherwise -> Prelude.Nothing)
                  (\ _ y__ -> Prelude.fmap TestOneof'OneofInt32Value y__))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "oneofInt32Value" (Data.Int.Int32)
+instance Lens.Labels.HasLens' TestOneof "oneofInt32Value"
+           (Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
@@ -2029,8 +2083,7 @@ instance Prelude.Functor f =>
                            _otherwise -> Prelude.Nothing)
                     (\ _ y__ -> Prelude.fmap TestOneof'OneofInt32Value y__))
                  (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "maybe'oneofStringValue"
+instance Lens.Labels.HasLens' TestOneof "maybe'oneofStringValue"
            (Prelude.Maybe Data.Text.Text)
          where
         lensOf' _
@@ -2044,8 +2097,7 @@ instance Prelude.Functor f =>
                                                                               x__val
                         _otherwise -> Prelude.Nothing)
                  (\ _ y__ -> Prelude.fmap TestOneof'OneofStringValue y__))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "oneofStringValue"
+instance Lens.Labels.HasLens' TestOneof "oneofStringValue"
            (Data.Text.Text)
          where
         lensOf' _
@@ -2061,8 +2113,7 @@ instance Prelude.Functor f =>
                            _otherwise -> Prelude.Nothing)
                     (\ _ y__ -> Prelude.fmap TestOneof'OneofStringValue y__))
                  (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "maybe'oneofBytesValue"
+instance Lens.Labels.HasLens' TestOneof "maybe'oneofBytesValue"
            (Prelude.Maybe Data.ByteString.ByteString)
          where
         lensOf' _
@@ -2076,8 +2127,7 @@ instance Prelude.Functor f =>
                                                                              x__val
                         _otherwise -> Prelude.Nothing)
                  (\ _ y__ -> Prelude.fmap TestOneof'OneofBytesValue y__))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "oneofBytesValue"
+instance Lens.Labels.HasLens' TestOneof "oneofBytesValue"
            (Data.ByteString.ByteString)
          where
         lensOf' _
@@ -2093,8 +2143,7 @@ instance Prelude.Functor f =>
                            _otherwise -> Prelude.Nothing)
                     (\ _ y__ -> Prelude.fmap TestOneof'OneofBytesValue y__))
                  (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "maybe'oneofEnumValue"
+instance Lens.Labels.HasLens' TestOneof "maybe'oneofEnumValue"
            (Prelude.Maybe EnumType)
          where
         lensOf' _
@@ -2108,8 +2157,7 @@ instance Prelude.Functor f =>
                                                                             x__val
                         _otherwise -> Prelude.Nothing)
                  (\ _ y__ -> Prelude.fmap TestOneof'OneofEnumValue y__))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "oneofEnumValue" (EnumType)
+instance Lens.Labels.HasLens' TestOneof "oneofEnumValue" (EnumType)
          where
         lensOf' _
           = (Prelude..)
@@ -2123,9 +2171,8 @@ instance Prelude.Functor f =>
                                                                                x__val
                            _otherwise -> Prelude.Nothing)
                     (\ _ y__ -> Prelude.fmap TestOneof'OneofEnumValue y__))
-                 (Data.ProtoLens.maybeLens Data.Default.Class.def))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "maybe'oneofMessageValue"
+                 (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault))
+instance Lens.Labels.HasLens' TestOneof "maybe'oneofMessageValue"
            (Prelude.Maybe MessageType)
          where
         lensOf' _
@@ -2139,8 +2186,8 @@ instance Prelude.Functor f =>
                                                                                x__val
                         _otherwise -> Prelude.Nothing)
                  (\ _ y__ -> Prelude.fmap TestOneof'OneofMessageValue y__))
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f TestOneof "oneofMessageValue" (MessageType)
+instance Lens.Labels.HasLens' TestOneof "oneofMessageValue"
+           (MessageType)
          where
         lensOf' _
           = (Prelude..)
@@ -2154,11 +2201,7 @@ instance Prelude.Functor f =>
                                                                                   x__val
                            _otherwise -> Prelude.Nothing)
                     (\ _ y__ -> Prelude.fmap TestOneof'OneofMessageValue y__))
-                 (Data.ProtoLens.maybeLens Data.Default.Class.def))
-instance Data.Default.Class.Default TestOneof where
-        def
-          = TestOneof{_TestOneof'oneofValue = Prelude.Nothing,
-                      _TestOneof'_unknownFields = ([])}
+                 (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage))
 instance Data.ProtoLens.Message TestOneof where
         messageName _ = Data.Text.pack "proto3.TestOneof"
         fieldsByTag
@@ -2167,7 +2210,7 @@ instance Data.ProtoLens.Message TestOneof where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "maybe'oneofInt32Value")))
                       :: Data.ProtoLens.FieldDescriptor TestOneof
@@ -2176,7 +2219,7 @@ instance Data.ProtoLens.Message TestOneof where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "maybe'oneofStringValue")))
                       :: Data.ProtoLens.FieldDescriptor TestOneof
@@ -2185,7 +2228,7 @@ instance Data.ProtoLens.Message TestOneof where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.BytesField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.ByteString.ByteString)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "maybe'oneofBytesValue")))
                       :: Data.ProtoLens.FieldDescriptor TestOneof
@@ -2194,7 +2237,7 @@ instance Data.ProtoLens.Message TestOneof where
                       (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor EnumType)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "maybe'oneofEnumValue")))
                       :: Data.ProtoLens.FieldDescriptor TestOneof
@@ -2203,7 +2246,7 @@ instance Data.ProtoLens.Message TestOneof where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MessageType)
                       (Data.ProtoLens.OptionalField
-                         (Lens.Labels.lensOf
+                         (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "maybe'oneofMessageValue")))
                       :: Data.ProtoLens.FieldDescriptor TestOneof
@@ -2217,6 +2260,20 @@ instance Data.ProtoLens.Message TestOneof where
         unknownFields
           = Lens.Family2.Unchecked.lens _TestOneof'_unknownFields
               (\ x__ y__ -> x__{_TestOneof'_unknownFields = y__})
+        defMessage
+          = TestOneof{_TestOneof'oneofValue = Prelude.Nothing,
+                      _TestOneof'_unknownFields = ([])}
+instance Control.DeepSeq.NFData TestOneof where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_TestOneof'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_TestOneof'oneofValue x__) (()))
+instance Control.DeepSeq.NFData TestOneof'OneofValue where
+        rnf (TestOneof'OneofInt32Value x__) = Control.DeepSeq.rnf x__
+        rnf (TestOneof'OneofStringValue x__) = Control.DeepSeq.rnf x__
+        rnf (TestOneof'OneofBytesValue x__) = Control.DeepSeq.rnf x__
+        rnf (TestOneof'OneofEnumValue x__) = Control.DeepSeq.rnf x__
+        rnf (TestOneof'OneofMessageValue x__) = Control.DeepSeq.rnf x__
 _TestOneof'OneofInt32Value ::
                            Lens.Labels.Prism.Prism' TestOneof'OneofValue Data.Int.Int32
 _TestOneof'OneofInt32Value

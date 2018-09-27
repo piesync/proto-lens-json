@@ -12,6 +12,7 @@ import Data.Aeson (Value, decode)
 import Data.Aeson.QQ
 import qualified Data.Map as Map
 import Data.ProtoLens
+import Data.ProtoLens.Default (def)
 import Data.ProtoLens.JSON
 import Lens.Family2 ((.~))
 import Test.Hspec

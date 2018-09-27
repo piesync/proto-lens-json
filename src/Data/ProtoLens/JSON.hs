@@ -11,7 +11,6 @@ import qualified Data.Aeson.Encoding as AE
 import qualified Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Builder as B
 import qualified Data.ByteString.Lazy as LBS
-import Data.Default.Class (def)
 import qualified Data.Map as Map
 import qualified Data.ProtoLens as P
 import qualified Data.Text as Text
@@ -36,8 +35,8 @@ fieldToEncoding msg (P.FieldDescriptor _ typeDescr accessor) =
     P.MapField k v f    ->
       return $ AE.pairs $ Map.foldMapWithKey fld (msg ^. f)
       where fld key val = maybe mempty
-                            (AE.pair' $ keyFieldToEncoding (def & k .~ key) keyFd) $
-                            fieldToEncoding (def & v .~ val) valFd
+                            (AE.pair' $ keyFieldToEncoding (P.defMessage & k .~ key) keyFd) $
+                            fieldToEncoding (P.defMessage & v .~ val) valFd
             [keyFd, valFd] = lookupDescOrDie accessor <$> [entryKeyTag, entryValueTag]
 
 keyFieldToEncoding :: msg -> P.FieldDescriptor msg -> AE.Encoding' Text.Text

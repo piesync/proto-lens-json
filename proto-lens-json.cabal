@@ -1,5 +1,5 @@
 name: proto-lens-json
-version: 0.2.0
+version: 0.3.0
 synopsis: JSON serialization for proto-lens.
 description: Serialize protocol buffer messages as JSON.
 
@@ -24,9 +24,8 @@ library
                  base64-bytestring >= 1.0 && < 1.1,
                  bytestring,
                  containers,
-                 data-default-class,
                  lens-family,
-                 proto-lens >= 0.3 && < 0.4,
+                 proto-lens >= 0.4 && < 0.5,
                  text
 
 test-suite tests
@@ -43,5 +42,6 @@ test-suite tests
                  hspec,
                  lens-family,
                  proto-lens,
+                 proto-lens-runtime,
                  proto-lens-json,
                  proto-lens-protoc
