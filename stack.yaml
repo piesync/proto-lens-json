@@ -65,4 +65,4 @@ extra-deps:
 - uuid-types-1.0.3
 - vector-0.12.0.1
 - void-0.7.2
-resolver: ghc-8.4.2
+resolver: ghc-8.4.3
