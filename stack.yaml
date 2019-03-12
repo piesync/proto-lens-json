@@ -2,13 +2,12 @@ flags:
   time-locale-compat:
     old-locale: false
 extra-deps:
-- StateVar-1.1.1.0
 - HUnit-1.6.0.0
 - QuickCheck-2.9.2
+- StateVar-1.1.1.0
 - aeson-1.2.0.0
 - aeson-qq-0.8.1
 - ansi-terminal-0.6.2.3
-- async-2.2.1
 - attoparsec-0.13.1.0
 - base-compat-0.9.3
 - base-orphans-0.6
@@ -21,7 +20,7 @@ extra-deps:
 - cpphs-1.20.5
 - distributive-0.5.3
 - dlist-0.8.0.2
-- fail-4.9.0.0
+- happy-1.19.9
 - hashable-1.2.7.0
 - haskell-src-exts-1.20.2
 - haskell-src-meta-0.8.0.2
@@ -32,16 +31,15 @@ extra-deps:
 - integer-logarithms-1.0.2.1
 - lens-family-1.2.1
 - lens-family-core-1.2.1
-- lens-labels-0.3.0.0
 - mtl-2.2.1
 - old-locale-1.0.0.7
 - old-time-1.1.0.3
 - parsec-3.1.13.0
 - polyparse-1.12
 - primitive-0.6.4.0
-- proto-lens-0.4.0.0
-- proto-lens-protoc-0.4.0.0
-- proto-lens-runtime-0.4.0.1
+- proto-lens-0.5.0.0
+- proto-lens-protoc-0.5.0.0
+- proto-lens-runtime-0.5.0.0
 - profunctors-5.2.2
 - quickcheck-io-0.2.0
 - random-1.1
