@@ -1,1 +1,5 @@
 resolver: lts-17.1
+extra-deps:
+# https://github.com/haskell-unordered-containers/unordered-containers/pull/209/
+# breaks our checksums, stick to the version before it
+- unordered-containers-0.2.10.0
