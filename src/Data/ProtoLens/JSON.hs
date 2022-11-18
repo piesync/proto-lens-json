@@ -39,7 +39,7 @@ fieldToEncoding msg (P.FieldDescriptor _ typeDescr accessor) =
                             fieldToEncoding (P.defMessage & v .~ val) valFd
             [keyFd, valFd] = lookupDescOrDie accessor <$> [entryKeyTag, entryValueTag]
 
-keyFieldToEncoding :: msg -> P.FieldDescriptor msg -> AE.Encoding' Text.Text
+keyFieldToEncoding :: msg -> P.FieldDescriptor msg -> AE.Encoding' Aeson.Key
 keyFieldToEncoding msg d@(P.FieldDescriptor _ typeDescr accessor) =
   case accessor of
     P.PlainField _ f  -> keyValueToEncoding typeDescr (msg ^. f)
@@ -72,7 +72,7 @@ realFloatToEncoding e d
   | isInfinite d = AE.text $ if d > 0 then "Infinity" else "-Infinity"
   | otherwise    = e d
 
-keyValueToEncoding :: P.FieldTypeDescriptor value -> value -> AE.Encoding' Text.Text
+keyValueToEncoding :: P.FieldTypeDescriptor value -> value -> AE.Encoding' Aeson.Key
 keyValueToEncoding (P.ScalarField P.Int32Field) = AE.int32Text
 keyValueToEncoding (P.ScalarField P.Int64Field) = AE.int64Text
 keyValueToEncoding (P.ScalarField P.UInt32Field) = AE.word32Text
