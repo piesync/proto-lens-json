@@ -1,5 +1,5 @@
-resolver: lts-20.0
 extra-deps:
-  # https://github.com/haskell-unordered-containers/unordered-containers/pull/317/
-  # breaks our checksums, stick to the version before it
-- unordered-containers-0.2.15.0
+  # Dependency of proto-lens-protoc
+  - ghc-source-gen-0.4.5.0
+  - proto-lens-protoc-0.8.0.1
+resolver: lts-22.43

@@ -23,8 +23,8 @@ library
   other-modules: Data.ProtoLens.JSON.Decode
                  Data.ProtoLens.JSON.Encode
                  Data.ProtoLens.JSON.Util
-  build-depends: base >= 4.8 && < 4.17,
-                 aeson >= 2.0 && < 2.1,
+  build-depends: base >= 4.8 && < 4.19,
+                 aeson >= 2.0 && < 2.2,
                  attoparsec,
                  base64-bytestring >= 1.0 && < 1.3,
                  bytestring,
