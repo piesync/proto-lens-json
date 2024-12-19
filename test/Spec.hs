@@ -1,6 +1,7 @@
 {-# LANGUAGE NegativeLiterals #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Main where
 
@@ -8,13 +9,13 @@ import Data.Int
 import Data.Maybe (fromJust)
 import Data.Word
 
-import Data.Aeson (Value, decode)
+import Data.Aeson (Value, decode, encode)
 import Data.Aeson.QQ
 import qualified Data.Map as Map
 import Data.ProtoLens
 import Data.ProtoLens.Default (def)
 import Data.ProtoLens.JSON
-import Lens.Family2 ((.~))
+import Lens.Family2 ((.~), (^.))
 import Test.Hspec
 
 import Proto.JsonFormatProto3
@@ -25,6 +26,14 @@ main = hspec spec
 
 shouldEncodeAs :: Message msg => msg -> Value -> Expectation
 shouldEncodeAs msg expected = (fromJust $ decode $ encodeMessageJSON msg) `shouldBe` expected
+
+shouldDecodeAs :: (Message msg, Eq msg, Show msg) => Value -> msg -> Expectation
+shouldDecodeAs json expected =
+  (decodeMessageJSON $ encode json) `shouldBe` Right expected
+
+shouldErrorWith :: Value -> String -> Expectation
+shouldErrorWith json expectedError =
+  (decodeMessageJSON @TestMessage $ encode json) `shouldBe` Left expectedError
 
 empty :: TestMessage
 empty = def
@@ -151,3 +160,101 @@ spec = do
     let oneof :: TestOneof
         oneof = (def & oneofInt32Value .~ 0 & oneofStringValue .~ "test" :: TestOneof) in
       oneof `shouldEncodeAs` [aesonQQ| { oneofStringValue: "test" } |]
+
+  it "decodes all types from JSON" $
+    decodeMessageJSON (encodeMessageJSON filled) `shouldBe` Right filled
+
+  it "decodes map fields" $
+    decodeMessageJSON (encodeMessageJSON filledMap) `shouldBe` Right filledMap
+
+  it "decodes proto field names in addition to the default camelCase" $
+    [aesonQQ| { "string_value": "foo" } |] `shouldDecodeAs` (empty & stringValue .~ "foo")
+
+  it "decodes null as the default value" $
+    [aesonQQ|
+      {
+        "int32Value": null,
+        "int64Value": null,
+        "uint32Value": null,
+        "uint64Value": null,
+        "floatValue": null,
+        "doubleValue": null,
+        "boolValue": null,
+        "stringValue": null,
+        "bytesValue": null,
+        "messageValue": null,
+        "enumValue": null,
+        "repeatedInt32Value": null,
+        "repeatedInt64Value": null,
+        "repeatedUint32Value": null,
+        "repeatedUint64Value": null,
+        "repeatedFloatValue": null,
+        "repeatedDoubleValue": null,
+        "repeatedBoolValue": null,
+        "repeatedStringValue": null,
+        "repeatedBytesValue": null,
+        "repeatedMessageValue": null,
+        "repeatedEnumValue": null
+      }
+    |] `shouldDecodeAs` empty
+
+  it "decodes numeric enum tags" $
+    [aesonQQ| { "enumValue": 1 } |] `shouldDecodeAs` (empty & enumValue .~ BAR)
+
+  it "decodes all numeric types from strings" $
+    [aesonQQ|
+      {
+        "int32Value": "20",
+        "int64Value": "-20",
+        "uint32Value": "3120987654",
+        "floatValue": "3.1415",
+        "doubleValue": "3.1415"
+      }
+    |]
+    `shouldDecodeAs`
+    (
+      empty
+      & int32Value .~ 20
+      & int64Value .~ -20
+      & uint32Value .~ 3120987654
+      & floatValue .~ 3.1415
+      & doubleValue .~ 3.1415
+    )
+
+  it "decodes NaN" $ do
+    let Right parsed = decodeMessageJSON $ encode [aesonQQ| { "doubleValue": "NaN" } |]
+    isNaN $ ((parsed :: TestMessage) ^. doubleValue)
+
+  it "decodes oneof" $
+    [aesonQQ| { "oneof_string_value": "foo" } |]
+    `shouldDecodeAs`
+    (def @TestOneof & oneofStringValue .~ "foo")
+
+  it "decodes oneof, preferring the last specified case" $
+    [aesonQQ|
+      {
+        "oneof_int32_value": 42,
+        "oneof_string_value": "foo"
+      }
+    |]
+    `shouldDecodeAs`
+    (def @TestOneof & oneofStringValue .~ "foo")
+
+  it "uses JSON fields in error messages" $
+    [aesonQQ| { "stringValue": 1 } |]
+    `shouldErrorWith`
+    "Error in $.stringValue: expected String, but encountered Number"
+
+  it "includes array index in error messages" $
+    [aesonQQ| { "repeatedStringValue": ["foo", 1] } |]
+    `shouldErrorWith`
+    "Error in $.repeatedStringValue[1]: expected String, but encountered Number"
+
+  it "includes map key in error messages" $
+    (decodeMessageJSON @TestMap $ encode [aesonQQ|
+      {
+        "bool_map": { "true": 1, "not a bool": 2 }
+      }
+    |])
+    `shouldBe`
+    Left "Error in $['bool_map']['not a bool']: cannot read bool from map key"
